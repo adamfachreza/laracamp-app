@@ -11,9 +11,15 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $checkouts = checkout::with('Camp')->whereUserId(Auth::id())->get();
-        return view('admin.dashboard',[
-            'checkouts' => $checkouts,
+        $checkouts = Checkout::with('Camp')->get();
+        return view('admin.dashboard', [
+            'checkouts' => $checkouts
         ]);
+
+
+        // $checkouts = checkout::with('Camp')->whereUserId(Auth::id())->get();
+        // return view('admin.dashboard',[
+        //     'checkouts' => $checkouts,
+        // ]);
     }
 }

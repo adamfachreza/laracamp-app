@@ -28,7 +28,7 @@
                                     <td>{{$checkout->User->price}}k</td>
                                     <td>{{$checkout->created_at->format('M d Y')}}</td>
                                     <td>
-                                        @if ($checkou->is_paid)
+                                        @if ($checkout->is_paid)
                                         <span class="badge bg-success">Paid</span>
                                         @else
                                         <span class="badge bg-warning">Waiting</span>
