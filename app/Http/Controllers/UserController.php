@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\User\AfterRegister;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
 
 class UserController extends Controller
@@ -30,22 +32,28 @@ class UserController extends Controller
         'email_verified_at' => date('Y-m-d H:i:s'),
        ];
     //    return $data;
-       $user = User::firstOrCreate(['email'=>$data['email']], $data);
+    //    $user = User::firstOrCreate(['email'=>$data['email']], $data);
+
+       $user = User::whereEmail($data['email'])->first();
+       if(!$user){
+        $user = User::create($data);
+        Mail::to($user->email)->send(new AfterRegister($user));
+       }
        Auth::login($user, true);
        return redirect('/');
 
     }
 
-    public function handleProviderCallbackGithub(){
-        $githubUser = Socialite::driver('github')->user();
-        $data = [
-            'name' => $githubUser->getName(),
-            'email' => $githubUser->getEmail(),
-            'avatar' => $githubUser->getAvatar(),
-            'email_verified_at' => date('Y-m-d H:i:s'),
-        ];
-        $user = User::firstOrCreate(['email'=>$data['email']], $data);
-       Auth::login($user, true);
-       return redirect('/');
-     }
+    // public function handleProviderCallbackGithub(){
+    //     $githubUser = Socialite::driver('github')->user();
+    //     $data = [
+    //         'name' => $githubUser->getName(),
+    //         'email' => $githubUser->getEmail(),
+    //         'avatar' => $githubUser->getAvatar(),
+    //         'email_verified_at' => date('Y-m-d H:i:s'),
+    //     ];
+    //     $user = User::firstOrCreate(['email'=>$data['email']], $data);
+    //    Auth::login($user, true);
+    //    return redirect('/');
+    //  }
 }

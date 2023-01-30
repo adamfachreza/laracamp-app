@@ -1,42 +1,48 @@
 <?php
 
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\User\UserController as UserDashboard;
+use App\Http\Controllers\Admin\AdminController as AdminDashboard;
+use App\Http\Controllers\Admin\CheckoutController as AdminCheckout;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 Route::get('/', function () {
     return view('welcome');
 })->name('index');
 
-Route::get('/checkout', function () {
-    return view('checkout');
-})->name('checkout');
-
-Route::get('/success', function () {
-    return view('success');
-})->name('success');
-
 
 // socialite route
 Route::get('/sign-in-google',[UserController::class,'google'])->name('signin-google');
 Route::get('/auth/google/callback',[userController::class,'handleProviderCallbackGoogle'])->name('user.google.callback');
-
-Route::get('/sign-in-github',[UserController::class,'github'])->name('signin-github');
+Route::get('/sign-in-github',[UserController::class,'google'])->name('signin-github');
 Route::get('/auth/github/callback',[userController::class,'handleProviderCallbackGithub'])->name('user.github.callback');
+//
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
 
+Route::middleware(['auth'])->group(function(){
+    // checkout
+    Route::get('/checkout/success',[CheckoutController::class,'success'])->name('checkout.success')->middleware('ensureUserRole:user');
+    Route::get('/checkout/{camp:slug}',[CheckoutController::class,'create'])->name('checkout')->middleware('ensureUserRole:user');
+    Route::post('/checkout/{camp}',[CheckoutController::class,'store'])->name('checkout.store')->middleware('ensureUserRole:user');
+
+    // user dashboard
+    Route::get('/dashboard',[HomeController::class,'dashboard'])->name('dashboard');
+
+    Route::prefix('user/dashboard')->namespace('User')->name('user.')->middleware('ensureUserRole:user')->group(function(){
+        Route::get('/',[UserDashboard::class,'index'])->name('dashboard');
+    });
+
+    // admin dashboard
+    Route::prefix('admin/dashboard')->namespace('Admin')->name('admin.')->middleware('ensureUserRole:admin')->group(function(){
+        Route::get('/',[AdminDashboard::class,'index'])->name('dashboard');
+
+        Route::post('/checkout/{checkout}',[AdminCheckout::class,'update'])->name('checkout.update');
+    });
+
+    // Route::get('dashboard/checkout/invoice/{checkout}',[CheckoutController::class,'invoice'])->name('user.checkout.invoice');
+
+});
 require __DIR__.'/auth.php';

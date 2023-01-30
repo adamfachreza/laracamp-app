@@ -20,6 +20,7 @@ class adminSeeder extends Seeder
                 'email' => 'admin@laracamp.com',
                 'email_verified_at' => date('Y-m-d H:i:s', time()),
                 'password' => \bcrypt('admin'),
+                'is_admin' => true
             ],
         ];
         foreach($admin as $key => $adm){

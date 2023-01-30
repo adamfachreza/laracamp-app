@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\Checkout\Store;
+use App\Mail\Checkout\AfterCheckout;
+use App\Models\camp;
 use App\Models\checkout;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -22,9 +28,16 @@ class CheckoutController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(camp $camp, Request $request)
     {
-        //
+        if($camp->isRegistered){
+            $request->session()->flash('error',"You already registered on {$camp->title} camp.");
+            return redirect(route('user.dashboard'));
+        }
+
+        return view('checkouts.checkout',[
+            'camp' => $camp
+        ]);
     }
 
     /**
@@ -33,9 +46,27 @@ class CheckoutController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Store $request, camp $camp)
     {
-        //
+        // mapping data
+       $data = $request->all();
+       $data['user_id']= Auth::id();
+       $data['camp_id']= $camp->id;
+
+    //   update  user data
+        $user = Auth::user();
+        $user->email = $data['email'];
+        $user->name = $data['name'];
+        $user->occupation = $data['occupation'];
+        $user->save();
+
+        // create checkout
+        $checkout = Checkout::create($data);
+
+        // sending email
+        Mail::to(Auth::user()->email)->send(new AfterCheckout($checkout));
+
+       return redirect(( route('checkout.success')));
     }
 
     /**
@@ -81,5 +112,15 @@ class CheckoutController extends Controller
     public function destroy(checkout $checkout)
     {
         //
+    }
+
+    public function success()
+    {
+        return view('checkouts.success');
+    }
+
+    public function invoice(checkout $checkout)
+    {
+        return $checkout;
     }
 }

@@ -17,7 +17,7 @@ class campSeeder extends Seeder
         $camps = [
             [
                 'title' => "Gila Belajar",
-                'slug' => "Gila Belajar",
+                'slug' => "gila-belajar",
                 'price' => 280,
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date('Y-m-d H:i:s'),
@@ -26,8 +26,8 @@ class campSeeder extends Seeder
 
                 ],
                 [
-                    'title' => "Baru Mulair",
-                'slug' => "Baru Mulai",
+                    'title' => "Baru Mulai",
+                'slug' => "baru-mulai",
                 'price' => 140,
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date('Y-m-d H:i:s'),
