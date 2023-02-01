@@ -8,9 +8,7 @@ use App\Http\Controllers\Admin\AdminController as AdminDashboard;
 use App\Http\Controllers\Admin\CheckoutController as AdminCheckout;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('index');
+Route::get('/',[HomeController::class,'welcome'])->name('welcome');
 
 
 // socialite route
@@ -20,6 +18,9 @@ Route::get('/sign-in-github',[UserController::class,'google'])->name('signin-git
 Route::get('/auth/github/callback',[userController::class,'handleProviderCallbackGithub'])->name('user.github.callback');
 //
 
+//midtrans route get buat pembayaran ewallet, yg post buat pembayaran di indomart
+Route::get('payment/success',[checkoutController::class,'midtransCallback']);
+Route::post('payment/success',[checkoutController::class,'midtransCallback']);
 
 
 Route::middleware(['auth'])->group(function(){

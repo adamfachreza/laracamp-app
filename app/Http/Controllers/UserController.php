@@ -19,10 +19,6 @@ class UserController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function github(){
-        return Socialite::driver('github')->redirect();
-    }
-
     public function handleProviderCallbackGoogle(){
        $callback = Socialite::driver('google')->stateless()->user();
        $data = [
@@ -40,9 +36,13 @@ class UserController extends Controller
         Mail::to($user->email)->send(new AfterRegister($user));
        }
        Auth::login($user, true);
-       return redirect('/');
+       return redirect(route('welcome'));
 
     }
+
+     // public function github(){
+    //     return Socialite::driver('github')->redirect();
+    // }
 
     // public function handleProviderCallbackGithub(){
     //     $githubUser = Socialite::driver('github')->user();
