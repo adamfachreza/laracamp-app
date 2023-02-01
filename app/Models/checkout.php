@@ -14,11 +14,11 @@ class checkout extends Model
     protected $dates = ['created_at', 'updated_at','deleted_at','expired'];
     protected $table='checkouts';
     protected $primaryKey='id';
-    protected $fillable=['user_id','camp_id','card_number','expired','cvc','is_paid'];
+    protected $fillable=['user_id','camp_id','payment_status','midtrans_url','midtrans_booking_code'];
 
-    public function setExpiredAttributes($value){
-        $this->attributes['expired'] = date("Y-m-t", strtotime($value));
-    }
+    // public function setExpiredAttributes($value){
+    //     $this->attributes['expired'] = date("Y-m-t", strtotime($value));
+    // }
 
     public function Camp(): BelongsTo
     {

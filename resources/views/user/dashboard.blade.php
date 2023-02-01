@@ -31,27 +31,29 @@
                             </p>
                         </td>
                         <td>
-                            <strong>{{$checkout->camp->price}}</strong>
+                            <strong>Rp{{$checkout->camp->price}}k</strong>
                         </td>
                         <td>
-                            @if ($checkout->is_paid)
+                            <strong>{{$checkout->payment_status}}</strong>
+                            {{-- @if ($checkout->is_paid)
                                 <strong class="text-green">Payment Success</strong>
                             @else
                              <strong>Waiting for Payment</strong>
-                            @endif
-
-
+                            @endif --}}
                         </td>
                         <td>
-                            <a href="https://wa.me/082246300766?text=Hi, saya ingin bertanya tentang kelas {{$checkout->camp->title}}" class="btn btn-primary">
-                                Contant Support
-                            </a>
+                            @if ($checkout->payment_status == 'waiting'){
+                                <a href="{{$checkout->midtrans_url}}" class="btn btn-primary">Pay Here</a>
+                            }
+                            @endif
+                        </td>
+                        <td>
                         </td>
                     </tr>
                 @empty
                 <tr>
                     <td colspan="5">
-                        <h3>No Data</h3>
+                        <h3>No Camp Registered</h3>
                     </td>
                 </tr>
                 @endforelse
