@@ -38,6 +38,9 @@
                         <a href="{{ route('dashboard')}}" class="dropdown-item">My-Dashboard</a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.discount.index')}}" class="dropdown-item">Discount</a>
+                    </li>
+                    <li>
                         <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">Sign Out</a>
                         <form action="{{route('logout')}}" id="logout-form" method="post" style="display:none">
                         <input type="hidden" name="_token" value="{{csrf_token()}}">
