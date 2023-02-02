@@ -14,7 +14,7 @@ class checkout extends Model
     protected $dates = ['created_at', 'updated_at','deleted_at','expired'];
     protected $table='checkouts';
     protected $primaryKey='id';
-    protected $fillable=['user_id','camp_id','payment_status','midtrans_url','midtrans_booking_code'];
+    protected $fillable=['user_id','camp_id','payment_status','midtrans_url','midtrans_booking_code','discount_id','discount_percentage','total'];
 
     // public function setExpiredAttributes($value){
     //     $this->attributes['expired'] = date("Y-m-t", strtotime($value));
@@ -28,6 +28,11 @@ class checkout extends Model
     public function User(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function Discount(): BelongsTo
+    {
+        return $this->belongsTo(Discount::class);
     }
 
 }

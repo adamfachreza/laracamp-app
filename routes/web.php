@@ -6,6 +6,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\User\UserController as UserDashboard;
 use App\Http\Controllers\Admin\AdminController as AdminDashboard;
 use App\Http\Controllers\Admin\CheckoutController as AdminCheckout;
+use App\Http\Controllers\Admin\DiscountController as AdminDiscount;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',[HomeController::class,'welcome'])->name('welcome');
@@ -37,10 +39,13 @@ Route::middleware(['auth'])->group(function(){
     });
 
     // admin dashboard
-    Route::prefix('admin/dashboard')->namespace('Admin')->name('admin.')->middleware('ensureUserRole:admin')->group(function(){
+    // penggunaan ->namespace() tidak efektif untuk penggunaan definisi pada routing
+    Route::prefix('admin/dashboard')->name('admin.')->middleware('ensureUserRole:admin')->group(function(){
         Route::get('/',[AdminDashboard::class,'index'])->name('dashboard');
 
         Route::post('/checkout/{checkout}',[AdminCheckout::class,'update'])->name('checkout.update');
+
+       Route::resource('discount', AdminDiscount::class);
     });
 
     // Route::get('dashboard/checkout/invoice/{checkout}',[CheckoutController::class,'invoice'])->name('user.checkout.invoice');
